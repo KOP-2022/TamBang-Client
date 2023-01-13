@@ -13,6 +13,7 @@ module.exports = {
       'primary-light': '#33DEB5',
       'primary-lighter': '#96E5D2',
       transparent: 'transparent',
+      currentColor: 'currentColor',
     },
   },
   plugins: [],
