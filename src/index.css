@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input[type='checkbox'] + label {
+  @apply flex items-center justify-center w-[22px] h-[22px] border-2 cursor-pointer text-grey border-grey rounded-lg transition-all;
+}
+
+input[type='checkbox'] + label + label {
+  @apply text-grey transition-colors;
+}
+
+input:checked + label {
+  @apply border-primary text-primary;
+}
+
+input:checked + label + label {
+  @apply text-black;
+}
+
+input:not(:checked) + label > svg {
+  @apply hidden;
+}

@@ -1,0 +1,25 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+interface CheckBoxProps {
+  children: string;
+}
+
+const CheckBox = ({ children }: CheckBoxProps) => {
+  return (
+    <div className="flex gap-2 items-center">
+      <input type="checkbox" id={children} className="hidden" />
+      <label htmlFor={children}>
+        <FontAwesomeIcon
+          icon={['fas', 'check']}
+          size="sm"
+          className="text-currentColor"
+        />
+      </label>
+      <label htmlFor={children} className="cursor-pointer">
+        {children}
+      </label>
+    </div>
+  );
+};
+
+export default CheckBox;
