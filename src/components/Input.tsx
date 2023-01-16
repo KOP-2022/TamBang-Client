@@ -20,7 +20,7 @@ const Input = ({ icon, placeholder }: InputProps) => (
     <input
       type="text"
       className={cls(
-        'border pr-4 border-grey2 bg-transparent rounded-lg shadow-md w-full h-10 outline-none focus:border-primary-dark',
+        'border pr-4 border-grey2 bg-transparent rounded-lg shadow-md w-full h-10 outline-none transition-colors focus:border-primary-dark',
         icon ? 'pl-12' : 'pl-4'
       )}
       placeholder={placeholder}
