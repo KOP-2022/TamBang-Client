@@ -1,3 +1,5 @@
+import type { UseFormRegisterReturn } from 'react-hook-form';
+
 import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -6,9 +8,10 @@ import { cls } from '../libs/utils';
 interface InputProps {
   placeholder?: string;
   icon?: IconProp;
+  register?: UseFormRegisterReturn;
 }
 
-const Input = ({ icon, placeholder }: InputProps) => (
+const Input = ({ icon, placeholder, register }: InputProps) => (
   <div className="flex items-center w-full">
     {icon && (
       <FontAwesomeIcon
@@ -24,6 +27,7 @@ const Input = ({ icon, placeholder }: InputProps) => (
         icon ? 'pl-12' : 'pl-4'
       )}
       placeholder={placeholder}
+      {...register}
     />
   </div>
 );
