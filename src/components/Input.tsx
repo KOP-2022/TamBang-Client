@@ -9,9 +9,10 @@ interface InputProps {
   placeholder?: string;
   icon?: IconProp;
   register?: UseFormRegisterReturn;
+  type: React.HTMLInputTypeAttribute;
 }
 
-const Input = ({ icon, placeholder, register }: InputProps) => (
+const Input = ({ icon, placeholder, register, type }: InputProps) => (
   <div className="flex items-center w-full">
     {icon && (
       <FontAwesomeIcon
@@ -21,7 +22,7 @@ const Input = ({ icon, placeholder, register }: InputProps) => (
       />
     )}
     <input
-      type="text"
+      type={type}
       className={cls(
         'border pr-4 border-grey2 bg-transparent rounded-lg shadow-md w-full h-10 outline-none transition-colors focus:border-primary-dark',
         icon ? 'pl-12' : 'pl-4'
