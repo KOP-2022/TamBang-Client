@@ -10,6 +10,11 @@
 ![badge](https://img.shields.io/badge/Jest-C21325?logo=jest&logoColor=white&style=flat-square)
 ![badge](https://img.shields.io/badge/SWC-FFFFFF?logo=swc&logoColor=333&style=flat-square)
 ![badge](https://img.shields.io/badge/Cypress-17202C?logo=cypress&logoColor=white&style=flat-square)
+![badge](https://img.shields.io/badge/React_Hook_Form-EC5990?logo=reacthookform&logoColor=white&style=flat-square)
+![badge](https://img.shields.io/badge/React_Query-FF4154?logo=reactquery&logoColor=white&style=flat-square)
+![badge](https://img.shields.io/badge/React_Router-CA4245?logo=reactrouter&logoColor=white&style=flat-square)
+![badge](https://img.shields.io/badge/Font_Awesome-528DD7?logo=fontawesome&logoColor=white&style=flat-square)
+![badge](https://img.shields.io/badge/Axios-5A29E4?logo=axios&logoColor=white&style=flat-square)
 
 ![badge](https://img.shields.io/github/package-json/dependency-version/KOP-2022/TamBang-Client/dev/@vitejs/plugin-react-swc?style=flat-square)
 
