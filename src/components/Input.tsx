@@ -5,14 +5,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { cls } from '../libs/utils';
 
-interface InputProps {
-  placeholder?: string;
+export interface InputProps
+  extends React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  > {
   icon?: IconProp;
   register?: UseFormRegisterReturn;
-  type: React.HTMLInputTypeAttribute;
 }
 
-const Input = ({ icon, placeholder, register, type }: InputProps) => (
+const Input = ({ icon, placeholder, register, type, ...rest }: InputProps) => (
   <div className="flex items-center w-full">
     {icon && (
       <FontAwesomeIcon
@@ -29,6 +31,7 @@ const Input = ({ icon, placeholder, register, type }: InputProps) => (
       )}
       placeholder={placeholder}
       {...register}
+      {...rest}
     />
   </div>
 );
