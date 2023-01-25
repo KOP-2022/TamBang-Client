@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 
 import Button from '../components/Button';
-import Input from '../components/Input';
+import FormInput from '../components/FormInput';
 import Layout from '../components/Layout';
 
 interface LoginForm {
@@ -57,22 +57,24 @@ const LoginPage = () => {
           tambang
         </span>
         <form
-          className="flex flex-col gap-6 w-full max-w-xs"
+          className="flex flex-col gap-3 w-full max-w-xs"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Input
+          <FormInput
+            label="이름"
             type="text"
             placeholder="아이디를 입력하세요."
             register={register('id', { required: '아이디를 입력하세요.' })}
           />
-          <Input
+          <FormInput
+            label="비밀번호"
             type="password"
             placeholder="비밀번호를 입력하세요."
             register={register('password', {
               required: '비밀번호를 입력하세요.',
             })}
           />
-          <div className="flex text-center text-xs text-grey">
+          <div className="flex text-center text-xs text-grey mt-4">
             <Link to="/find/id" className="flex-1 border-r border-grey2">
               아이디 찾기
             </Link>
