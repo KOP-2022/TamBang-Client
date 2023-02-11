@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 
-import { cls } from '../libs/utils';
+import { cls } from '@/libs/utils';
 
 const Button = ({
   children,

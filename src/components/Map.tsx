@@ -36,7 +36,7 @@ const Map = () => {
       document.head.removeChild(mapScript);
     };
   }, []);
-  return <div ref={mapRef} className="h-screen"></div>;
+  return <div ref={mapRef} className="h-full"></div>;
 };
 
 export default Map;
