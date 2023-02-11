@@ -7,8 +7,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import App from './App';
 import icons from './icons';
+import { worker } from './mocks/browser';
 
 import './index.css';
+
+if (import.meta.env.DEV) worker.start();
 
 library.add(...icons);
 const queryClient = new QueryClient();
