@@ -7082,6 +7082,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ssr-window@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "ssr-window@npm:4.0.2"
+  checksum: df182600927f4f3225224cf8c02338ea637c9750519505bbfb9a9236741a2a7ec088386fb948bca7b447b8303d9109e7dc7672e3de041c79ac2a0e03665af7d2
+  languageName: node
+  linkType: hard
+
 "ssri@npm:^9.0.0":
   version: 9.0.1
   resolution: "ssri@npm:9.0.1"
@@ -7273,6 +7280,15 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
+  languageName: node
+  linkType: hard
+
+"swiper@npm:^9.0.0":
+  version: 9.0.4
+  resolution: "swiper@npm:9.0.4"
+  dependencies:
+    ssr-window: ^4.0.2
+  checksum: 6cd349dcdc1a77067eb940c24d2245ef8f666caae3af00465eb38f47adf25575c2ede267ee1bba67a57ad60cdb6ebaf15b42a45171d0eed46a95dd449eb54c29
   languageName: node
   linkType: hard
 
@@ -7767,6 +7783,7 @@ __metadata:
     react-dom: ^18.2.0
     react-hook-form: ^7.42.1
     react-router-dom: ^6.6.1
+    swiper: ^9.0.0
     tailwindcss: ^3.2.4
     typescript: ^4.9.3
     vite: ^4.0.0
