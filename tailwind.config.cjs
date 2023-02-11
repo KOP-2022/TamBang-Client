@@ -16,5 +16,16 @@ module.exports = {
       currentColor: 'currentColor',
     },
   },
-  plugins: [],
+  daisyui: {
+    themes: [
+      {
+        light: {
+          ...require('daisyui/src/colors/themes')['[data-theme=light]'],
+          primary: '#00D6A2',
+          secondary: '#00C192',
+        },
+      },
+    ],
+  },
+  plugins: [require('daisyui')],
 };

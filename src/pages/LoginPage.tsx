@@ -7,9 +7,9 @@ import { useMutation } from '@tanstack/react-query';
 
 import axios, { AxiosError } from 'axios';
 
-import Button from '../components/Button';
-import FormInput from '../components/FormInput';
-import Layout from '../components/Layout';
+import Button from '@/components/Button';
+import FormInput from '@/components/FormInput';
+import Layout from '@/components/Layout';
 
 interface LoginForm {
   id: string;
@@ -52,7 +52,7 @@ const LoginPage = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center mx-auto">
+      <div className="flex flex-col items-center mx-auto pb-4">
         <span className="uppercase select-none text-center text-7xl text-primary font-semibold drop-shadow-[0_6px_5px_rgba(0,0,0,0.25)] my-32">
           tambang
         </span>

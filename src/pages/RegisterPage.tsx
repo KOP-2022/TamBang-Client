@@ -6,9 +6,9 @@ import { useMutation } from '@tanstack/react-query';
 
 import axios, { AxiosError } from 'axios';
 
-import Button from '../components/Button';
-import FormInput from '../components/FormInput';
-import Layout from '../components/Layout';
+import Button from '@/components/Button';
+import FormInput from '@/components/FormInput';
+import Layout from '@/components/Layout';
 
 interface RegisterRequest {
   id: string;
