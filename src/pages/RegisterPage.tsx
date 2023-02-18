@@ -1,27 +1,26 @@
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
-import axios, { AxiosError } from 'axios';
+import ky from 'ky';
+
+import type { Response } from 'response';
 
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
 import Layout from '@/components/Layout';
 
 interface RegisterRequest {
-  id: string;
+  email: string;
   password: string;
   name: string;
   nickname: string;
   phone: string;
-  email: string;
 }
-interface RegisterResponse {
-  ok: boolean;
-  message?: string;
-}
+
 interface RegisterForm extends RegisterRequest {
   passwordConfirm: string;
 }
@@ -33,28 +32,19 @@ const RegisterPage = () => {
     formState: { errors },
     getValues,
   } = useForm<RegisterForm>();
-
-  const { mutateAsync, isLoading } = useMutation<
-    RegisterResponse,
-    AxiosError,
-    RegisterRequest
-  >({
-    mutationFn: (data) =>
-      axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/member`, data),
+  const { mutate, isLoading } = useMutation<Response, Error, RegisterRequest>({
+    mutationFn: (data) => ky.post(`/api/members`, { json: data }).json(),
   });
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<RegisterForm> = (data) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordConfirm: _, ...request } = data;
-    await mutateAsync(request, {
+    mutate(request, {
       onSuccess: (response) => {
-        alert('request success');
-        if (!response.ok) setErrorMessage(response.message);
-      },
-      onError: () => {
-        alert('request failed');
+        if (response.success) navigate('/login', { replace: true });
+        else setErrorMessage(response.message);
       },
     });
   };
@@ -70,10 +60,18 @@ const RegisterPage = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <FormInput
-            label="아이디"
-            type="text"
-            placeholder="예: tambang12"
-            register={register('id', { required: '아이디는 필수입니다.' })}
+            label="이메일"
+            type="email"
+            placeholder="예: tambang@tambang.com"
+            register={register('email', {
+              required: '이메일은 필수입니다.',
+              validate: {
+                validateEmail: (email) =>
+                  /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/.test(
+                    email
+                  ) || '이메일 형식이 아닙니다.',
+              },
+            })}
           />
           <FormInput
             label="비밀번호"
@@ -90,8 +88,8 @@ const RegisterPage = () => {
             register={register('passwordConfirm', {
               required: '비밀번호를 다시 입력하세요.',
               validate: {
-                matchPassword: (password) =>
-                  getValues().password === password ||
+                matchPassword: (passwordConfirm) =>
+                  getValues().password === passwordConfirm ||
                   '비밀번호가 일치하지 않습니다.',
               },
             })}
@@ -113,20 +111,6 @@ const RegisterPage = () => {
             })}
           />
           <FormInput
-            label="이메일"
-            type="email"
-            placeholder="예: tambang@tambang.com"
-            register={register('email', {
-              required: '이메일은 필수입니다.',
-              validate: {
-                validateEmail: (email) =>
-                  /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/.test(
-                    email
-                  ) || '이메일 형식이 아닙니다.',
-              },
-            })}
-          />
-          <FormInput
             label="휴대전화"
             type="tel"
             placeholder="예: 010-0000-0000"
@@ -142,12 +126,11 @@ const RegisterPage = () => {
             maxLength={13}
           />
           <span className="h-6 text-center text-red mt-4">
-            {errors.id?.message ||
+            {errors.email?.message ||
               errors.password?.message ||
               errors.passwordConfirm?.message ||
               errors.name?.message ||
               errors.nickname?.message ||
-              errors.email?.message ||
               errors.phone?.message ||
               errorMessage}
           </span>

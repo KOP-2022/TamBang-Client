@@ -1,24 +1,21 @@
 import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
-import axios, { AxiosError } from 'axios';
+import ky from 'ky';
+
+import type { Response } from 'response';
 
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
 import Layout from '@/components/Layout';
 
 interface LoginForm {
-  id: string;
+  email: string;
   password: string;
-}
-
-interface LoginResponse {
-  ok: boolean;
-  message?: string;
 }
 
 const LoginPage = () => {
@@ -27,25 +24,17 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginForm>();
-  const { mutateAsync, isLoading } = useMutation<
-    LoginResponse,
-    AxiosError,
-    LoginForm
-  >({
-    mutationFn: (data) =>
-      axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/login`, data),
+  const { mutate, isLoading } = useMutation<Response, Error, LoginForm>({
+    mutationFn: (data) => ky.post(`/api/login`, { json: data }).json(),
   });
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
-    console.log(data);
-    await mutateAsync(data, {
+  const onSubmit: SubmitHandler<LoginForm> = (data) => {
+    mutate(data, {
       onSuccess: (response) => {
-        alert('request success');
-        if (!response.ok) setErrorMessage(response.message);
-      },
-      onError: () => {
-        alert('request failed');
+        if (response.success) navigate('/', { replace: true });
+        else setErrorMessage(response.message);
       },
     });
   };
@@ -64,7 +53,7 @@ const LoginPage = () => {
             label="이름"
             type="text"
             placeholder="아이디를 입력하세요."
-            register={register('id', { required: '아이디를 입력하세요.' })}
+            register={register('email', { required: '아이디를 입력하세요.' })}
           />
           <FormInput
             label="비밀번호"
@@ -86,7 +75,7 @@ const LoginPage = () => {
             </Link>
           </div>
           <span className="h-6 text-center text-red mt-4">
-            {errors.id?.message || errors.password?.message || errorMessage}
+            {errors.email?.message || errors.password?.message || errorMessage}
           </span>
           <Button className="mt-8" disabled={isLoading}>
             {isLoading ? (
