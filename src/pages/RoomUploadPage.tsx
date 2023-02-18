@@ -2,13 +2,14 @@ import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import type { Response } from '@/types/response';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
-import axios, { type AxiosError } from 'axios';
+import ky from 'ky';
 import { Virtual } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+
+import type { Response } from 'response';
 
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
@@ -29,6 +30,7 @@ interface RoomUploadForm {
   monthlypay: number;
   description: string;
   image: FileList;
+  // 위도 경도 추가
 }
 
 interface RoomUploadResponse {
@@ -59,13 +61,10 @@ const RoomUploadPage = () => {
   });
   const { mutate, isLoading, data } = useMutation<
     Response<RoomUploadResponse>,
-    AxiosError,
+    Error,
     FormData
   >({
-    mutationFn: (data) =>
-      axios.post(`/api/real-estate`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }),
+    mutationFn: (data) => ky.post(`/api/real-estate`, { body: data }).json(),
   });
   const dataTransferRef = useRef(new DataTransfer());
   const navigate = useNavigate();
@@ -104,7 +103,6 @@ const RoomUploadPage = () => {
 
   useEffect(() => {
     if (data && data.success) {
-      alert('success');
       navigate('/');
     }
   }, [data, navigate]);
