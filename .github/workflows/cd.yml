@@ -1,0 +1,75 @@
+name: Deployment
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Create .env
+        shell: bash
+        run: |
+          echo "${{ secrets.ENVIRONMENTS }}" > .env
+      - name: Install dependencies and build project
+        run: |
+          yarn install --immutable --immutable-cache
+          yarn build
+      - name: Create 200.html
+        run: cp dist/index.html dist/200.html
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist
+
+  deploy-production:
+    if: github.ref_name == 'main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: ${{ vars.DOMAIN }}
+    steps:
+      - name: Download production artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install surge
+        run: npm i -g surge
+      - name: Deploy with Surge
+        run: surge ./dist ${{ vars.DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}
+
+  deploy-development:
+    if: github.ref_name == 'develop'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: Development
+      url: ${{ vars.DOMAIN }}
+    steps:
+      - name: Download production artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install surge
+        run: npm i -g surge
+      - name: Deploy with Surge
+        run: surge ./dist ${{ vars.DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}

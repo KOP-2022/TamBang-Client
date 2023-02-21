@@ -1,0 +1,6 @@
+__test__/
+cypress/
+config/
+vite.config.ts
+*.cjs
+*.mjs
