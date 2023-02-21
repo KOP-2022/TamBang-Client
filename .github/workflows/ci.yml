@@ -22,9 +22,11 @@ jobs:
       - name: Run unit test
         run: yarn test
       - name: Run e2e test
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v3.1.0
         with:
-          command-prefix: yarn
+          command-prefix: yarn dlx
+          install-command: yarn install --immutable
+          config-file: cypress.config.mjs
           start: yarn vite --host
           wait-on: 'http://localhost:5173'
           browser: chrome
