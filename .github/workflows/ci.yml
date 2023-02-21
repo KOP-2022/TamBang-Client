@@ -21,11 +21,13 @@ jobs:
         run: yarn lint
       - name: Run unit test
         run: yarn test
-      - run: yarn add cypress -D
       - name: Run e2e test
         uses: cypress-io/github-action@v5
         with:
-          install: false
-          command: yarn test:e2e
+          command-prefix: yarn dlx
+          start: yarn dev
+          wait-on: 'http://localhost:3000'
+          browser: chrome
+          headless: true
       - name: Run build test
         run: yarn build
