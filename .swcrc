@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/swcrc",
   "jsc": {
     "target": "es2017",
     "parser": {
@@ -19,13 +20,13 @@
       "hidden": {
         "jest": true
       }
+    },
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
     }
   },
   "module": {
-    "type": "commonjs",
-    "strict": false,
-    "strictMode": true,
-    "lazy": false,
-    "noInterop": false
+    "type": "commonjs"
   }
 }
