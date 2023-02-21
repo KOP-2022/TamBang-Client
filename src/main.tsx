@@ -11,7 +11,7 @@ import { worker } from './mocks/browser';
 
 import './index.css';
 
-if (import.meta.env.DEV) worker.start();
+if (import.meta.env.MODE === 'mocking') worker.start();
 
 library.add(...icons);
 const queryClient = new QueryClient();
