@@ -46,7 +46,7 @@
     "@vitejs/plugin-react-swc": "^3.0.0",
     "autoprefixer": "^10.4.13",
     "camelcase": "6",
-    "cypress": "^12.2.0",
+    "cypress": "^10.11.0",
     "eslint": "^8.27.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.31.11",
