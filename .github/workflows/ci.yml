@@ -21,7 +21,7 @@ jobs:
         run: yarn lint
       - name: Run unit test
         run: yarn test
-      - run: yarn add cypress -wD
+      - run: yarn add cypress -D
       - name: Run e2e test
         uses: cypress-io/github-action@v5
         with:
