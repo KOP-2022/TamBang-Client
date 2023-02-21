@@ -32,3 +32,8 @@ dist-ssr
 !.yarn/versions
 
 .env
+
+# cypress
+cypress/screenshots
+cypress/videos
+cypress/log
