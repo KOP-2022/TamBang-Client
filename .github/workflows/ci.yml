@@ -26,8 +26,7 @@ jobs:
         with:
           command-prefix: yarn dlx
           start: yarn dev
-          wait-on: 'http://localhost:3000'
+          wait-on: 'http://localhost:5173'
           browser: chrome
-          headless: true
       - name: Run build test
         run: yarn build
