@@ -1,3 +1,7 @@
+const fs = require('fs');
+const config = JSON.parse(fs.readFileSync(`${__dirname}/.swcrc`, 'utf-8'));
+const cwd = global.process.cwd();
+
 module.exports = {
   roots: ['<rootDir>/src'],
   collectCoverageFrom: [
@@ -10,15 +14,20 @@ module.exports = {
   testEnvironment: 'jsdom',
   modulePaths: ['<rootDir>/src'],
   transform: {
-    '^.+\\.(ts|js|tsx|jsx)$': '@swc/jest',
+    '^.+\\.(ts|js|tsx|jsx)$': [
+      'jest-chain-transform',
+      {
+        transformers: [
+          `${cwd}/config/jest/importMetaEnvTransformer.cjs`,
+          ['@swc/jest', { ...config }],
+        ],
+      },
+    ],
     '^.+\\.css$': '<rootDir>/config/jest/cssTransform.cjs',
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
       '<rootDir>/config/jest/fileTransform.cjs',
   },
-  transformIgnorePatterns: [
-    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
-    '^.+\\.module\\.(css|sass|scss)$',
-  ],
+  transformIgnorePatterns: ['^.+\\.module\\.(css|sass|scss)$'],
   moduleNameMapper: {
     '^react-native$': 'react-native-web',
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
