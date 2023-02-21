@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "vite",
     "dev:mock": "vite --mode mocking",
-    "build": "tsc -p tsconfig.prod.json && vite build",
+    "build": "tsc -p tsconfig.prod.json && vite build && yarn postbuild",
+    "postbuild": "rm dist/mockServiceWorker.js",
     "preview": "vite preview",
     "test": "jest",
-    "test:e2e": "cypress open",
+    "test:e2e": "start-server-and-test dev http://localhost:5173 cy:run",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
