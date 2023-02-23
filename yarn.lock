@@ -1474,6 +1474,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/daum-postcode@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@types/daum-postcode@npm:2.0.0"
+  checksum: 2f17afe0678992dc1b3c9eb337b724c81209b7e2799fbbb6d90d151549a40868e5ae6cfdb45560ec95b4f2b87cd11d8e8a11b81e162a05aac6a8ac9d799c48f6
+  languageName: node
+  linkType: hard
+
 "@types/debug@npm:^4.1.7":
   version: 4.1.7
   resolution: "@types/debug@npm:4.1.7"
@@ -8342,6 +8349,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
+    "@types/daum-postcode": ^2.0.0
     "@types/jest": ^29.2.4
     "@types/react": ^18.0.26
     "@types/react-dom": ^18.0.9
