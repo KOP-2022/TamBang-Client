@@ -1,5 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import {
+  Map as KakaoMap,
+  MapMarker,
+  useInjectKakaoMapApi,
+} from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +21,7 @@ import FormInput from '@/components/FormInput';
 import 'swiper/css';
 import 'swiper/css/virtual';
 import Layout from '@/components/Layout';
+import { useInjectDaumPostcode } from '@/hooks/useInjectDaumPostcode';
 import { cls } from '@/libs/utils';
 
 interface RoomUploadForm {
@@ -30,7 +36,8 @@ interface RoomUploadForm {
   monthlypay: number;
   description: string;
   image: FileList;
-  // 위도 경도 추가
+  longitude: string;
+  latitude: string;
 }
 
 interface RoomUploadResponse {
@@ -68,9 +75,20 @@ const RoomUploadPage = () => {
   });
   const dataTransferRef = useRef(new DataTransfer());
   const navigate = useNavigate();
+  const { loading } = useInjectKakaoMapApi({
+    appkey: import.meta.env.VITE_KAKAO_MAP_KEY,
+    libraries: ['services'],
+  });
+  const { isLoading: postcodeLoading } = useInjectDaumPostcode();
+  const [showPostcode, setShowPostcode] = useState(false);
+  const postcodeRef = useRef<HTMLDivElement>(null);
 
   const images = watch('image') ?? [];
   const dealType = watch('dealtype');
+  const lng = watch('longitude');
+  const lat = watch('latitude');
+  const sigungu = watch('sigungu');
+  const roadname = watch('roadname');
 
   const onSubmit = ({ image, ...data }: RoomUploadForm) => {
     const formData = new FormData();
@@ -100,6 +118,33 @@ const RoomUploadPage = () => {
       dataTransferRef.current.items.remove(index);
       setValue('image', dataTransferRef.current.files);
     };
+  const convertAddressToLatLng = async (address: string) => {
+    if (loading) return;
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.addressSearch(address, (result, status) => {
+      if (status !== kakao.maps.services.Status.OK) return;
+      setValue('longitude', result[0].x);
+      setValue('latitude', result[0].y);
+    });
+  };
+  const onAddressClick: React.MouseEventHandler<HTMLInputElement> = () => {
+    if (!postcodeRef.current || postcodeLoading) return;
+
+    setShowPostcode(true);
+    new daum.Postcode({
+      oncomplete: async ({ sido, sigungu, roadAddress }) => {
+        const sigu = `${sido} ${sigungu}`;
+        setValue('sigungu', sigu);
+        const [roadname] = roadAddress.split(`${sigu} `).filter(Boolean);
+        setValue('roadname', roadname);
+        setShowPostcode(false);
+        convertAddressToLatLng(roadAddress);
+        console.log(roadname);
+      },
+      width: '100%',
+      height: '100%',
+    }).embed(postcodeRef.current);
+  };
 
   useEffect(() => {
     if (data && data.success) {
@@ -118,22 +163,36 @@ const RoomUploadPage = () => {
           className="flex flex-col gap-3 w-full max-w-xs"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <FormInput
-            label="시군구"
-            type="text"
-            placeholder="시군구를 입력해 주세요."
-            register={register('sigungu', {
-              required: '시군구를 입력해 주세요.',
-            })}
-          />
-          <FormInput
-            label="도로명"
-            type="text"
-            placeholder="도로명을 입력해 주세요."
-            register={register('roadname', {
-              required: '도로명을 입력해 주세요.',
-            })}
-          />
+          <div>
+            <label>주소</label>
+            <div
+              ref={postcodeRef}
+              className={showPostcode ? 'h-64 form-input overflow-hidden' : ''}
+            ></div>
+            {!showPostcode && (
+              <FormInput
+                label=""
+                type="button"
+                onClick={onAddressClick}
+                value={
+                  sigungu && roadname
+                    ? `${sigungu} ${roadname}`
+                    : '클릭하여 주소를 입력해 주세요.'
+                }
+                className={cls('text-left', !roadname ? 'text-grey' : '')}
+              />
+            )}
+          </div>
+          {!loading && !showPostcode && lng && lat && (
+            <KakaoMap
+              center={{ lat: +lat, lng: +lng }}
+              level={3}
+              className="h-60 form-input"
+              draggable={false}
+            >
+              <MapMarker position={{ lat: +lat, lng: +lng }}></MapMarker>
+            </KakaoMap>
+          )}
           <div>
             <label>건물 유형</label>
             <div className="flex">

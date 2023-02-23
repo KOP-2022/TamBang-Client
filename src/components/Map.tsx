@@ -14,6 +14,7 @@ interface MapProps {
 const Map = ({ rooms, filters }: MapProps) => {
   const { loading } = useInjectKakaoMapApi({
     appkey: import.meta.env.VITE_KAKAO_MAP_KEY,
+    libraries: ['services'],
   });
 
   const onMarketClick = (markerPos: LatLng) => async () => {
