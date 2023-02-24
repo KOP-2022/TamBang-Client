@@ -1,5 +1,6 @@
 import { rest } from 'msw';
 
+import { facilities } from './constansts';
 
 import type { Facility, Response, Room } from 'response';
 
@@ -40,6 +41,11 @@ export const handlers = [
       }));
 
     return res(ctx.json<Response<Room[]>>({ success: true, data }));
+  }),
+  rest.get('/api/real-estates/:id/facilities', async (req, res, ctx) => {
+    return res(
+      ctx.json<Response<Facility[]>>({ success: true, data: facilities })
+    );
   }),
   rest.post('/api/login', async (req, res, ctx) => {
     console.log(req.body);
