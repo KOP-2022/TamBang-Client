@@ -6,7 +6,7 @@ import {
 } from 'react-kakao-maps-sdk';
 
 import { LatLng } from 'kakao-maps';
-import { Response } from 'response';
+import { Facility, Response, Room } from 'response';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -15,11 +15,6 @@ import ky from 'ky';
 interface MapProps {
   filters: string[];
 }
-
-type Room = {
-  id: number;
-  coords: LatLng;
-};
 
 const Map = ({ filters }: MapProps) => {
   const { loading } = useInjectKakaoMapApi({

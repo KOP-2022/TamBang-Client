@@ -1,7 +1,7 @@
 import { rest } from 'msw';
 
-import type { LatLng } from 'kakao-maps';
-import type { Response } from 'response';
+
+import type { Facility, Response, Room } from 'response';
 
 interface RealEstate {
   real_estate_id: number;
@@ -9,11 +9,6 @@ interface RealEstate {
 interface Login {
   id: number;
 }
-
-type Room = {
-  id: number;
-  coords: LatLng;
-};
 
 export const handlers = [
   rest.post('/api/real-estate', async (req, res, ctx) => {
