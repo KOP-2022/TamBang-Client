@@ -1,7 +1,5 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import type { LatLng } from 'kakao-maps';
-
 import CheckBox from '@/components/CheckBox';
 import Layout from '@/components/Layout';
 import Map from '@/components/Map';
@@ -16,14 +14,6 @@ interface SearchForm {
 interface FilterForm {
   filters: string[];
 }
-
-const MOCK_DATA: LatLng[] = [
-  { lat: 33.450701, lng: 126.570667 },
-  { lat: 33.451001, lng: 126.570967 },
-  { lat: 33.451301, lng: 126.571267 },
-  { lat: 33.451601, lng: 126.571567 },
-  { lat: 33.451901, lng: 126.571867 },
-];
 
 const MapPage = () => {
   const { register, handleSubmit } = useForm<SearchForm>();
@@ -47,7 +37,7 @@ const MapPage = () => {
           ))}
         </div>
       </div>
-      <Map rooms={MOCK_DATA} filters={watch('filters') ?? []} />
+      <Map filters={watch('filters') ?? []} />
     </Layout>
   );
 };
