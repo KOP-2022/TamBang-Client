@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import {
   useInjectKakaoMapApi,
   Map as KakaoMap,
   MapMarker,
+  CustomOverlayMap,
 } from 'react-kakao-maps-sdk';
 
 import { LatLng } from 'kakao-maps';
 import { Facility, Response, Room } from 'response';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useQuery } from '@tanstack/react-query';
 
 import ky from 'ky';
@@ -27,6 +29,13 @@ const Map = ({ filters }: MapProps) => {
     queryFn: () =>
       ky.get(`/api/real-estates?latitude=${lat}&longitude=${lng}`).json(),
   });
+  const [id, setId] = useState<number>();
+  const { data: facilityData, refetch } = useQuery<Response<Facility[]>>({
+    queryKey: ['facilities', id],
+    queryFn: () => ky.get(`/api/real-estates/${id}/facilities`).json(),
+    enabled: false,
+  });
+  const [infoOpen, setInfoOpen] = useState<{ [key: number]: boolean }>({});
 
   const onMarketClick =
     ({ id, coords }: Room) =>
@@ -34,6 +43,7 @@ const Map = ({ filters }: MapProps) => {
       console.log('room id:', id);
       console.log('search position:', coords);
       console.log('with filters:', filters);
+      setId(id);
     };
   const onMapDragEnd = (map: kakao.maps.Map) => {
     const center = map.getCenter();
@@ -43,12 +53,16 @@ const Map = ({ filters }: MapProps) => {
   useEffect(() => {
     if (loading) return;
     const geocoder = new kakao.maps.services.Geocoder();
-    geocoder.addressSearch('서울 노원구 노해로 437', (result, status) => {
+    geocoder.addressSearch('서울특별시 노원구 광운로 20', (result, status) => {
       if (status !== kakao.maps.services.Status.OK) return;
-      console.log(result);
       setLatLng({ lat: +result[0].y, lng: +result[0].x });
     });
   }, [loading]);
+  useEffect(() => {
+    if (id) {
+      refetch();
+    }
+  }, [id, refetch]);
 
   return !loading ? (
     <KakaoMap
@@ -63,6 +77,48 @@ const Map = ({ filters }: MapProps) => {
           key={index}
           onClick={onMarketClick(room)}
         ></MapMarker>
+      ))}
+      {facilityData?.data.map((facility, index) => (
+        <Fragment key={index}>
+          <MapMarker
+            position={{ lat: facility.latitude, lng: facility.longitude }}
+            image={{
+              src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/category.png',
+              size: { width: 22, height: 26 },
+              options: {
+                spriteOrigin: { x: 10, y: 36 },
+                spriteSize: { width: 36, height: 98 },
+              },
+            }}
+            onClick={() => setInfoOpen((prev) => ({ ...prev, [index]: true }))}
+          ></MapMarker>
+          {infoOpen[index] && (
+            <CustomOverlayMap
+              position={{ lat: facility.latitude, lng: facility.longitude }}
+              yAnchor={1.4}
+            >
+              <div className="relative flex flex-col rounded bg-white p-4 border text-sm">
+                <a
+                  href={facility.placeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline font-bold text-lg underline-offset-2"
+                >
+                  {facility.placeName}
+                </a>
+                <span>{facility.roadAddressName}</span>
+                <button
+                  className="absolute right-2 top-1"
+                  onClick={() =>
+                    setInfoOpen((prev) => ({ ...prev, [index]: false }))
+                  }
+                >
+                  <FontAwesomeIcon icon={['fas', 'xmark']} size="xl" />
+                </button>
+              </div>
+            </CustomOverlayMap>
+          )}
+        </Fragment>
       ))}
     </KakaoMap>
   ) : null;
