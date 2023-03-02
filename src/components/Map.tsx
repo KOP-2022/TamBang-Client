@@ -12,7 +12,7 @@ import { Facility, Response, Room } from 'response';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useQuery } from '@tanstack/react-query';
 
-import ky from 'ky';
+import { api } from '@/libs/api';
 
 interface MapProps {
   filters: string[];
@@ -27,12 +27,12 @@ const Map = ({ filters }: MapProps) => {
   const { data } = useQuery<Response<Room[]>>({
     queryKey: ['real-estates', lat, lng],
     queryFn: () =>
-      ky.get(`/api/real-estates?latitude=${lat}&longitude=${lng}`).json(),
+      api.get(`map?latitude=${lat}&longitude=${lng}&radius=${500}`).json(),
   });
   const [id, setId] = useState<number>();
   const { data: facilityData, refetch } = useQuery<Response<Facility[]>>({
     queryKey: ['facilities', id],
-    queryFn: () => ky.get(`/api/real-estates/${id}/facilities`).json(),
+    queryFn: () => api.get(`real-estates/${id}/facilities`).json(),
     enabled: false,
   });
   const [infoOpen, setInfoOpen] = useState<{ [key: number]: boolean }>({});

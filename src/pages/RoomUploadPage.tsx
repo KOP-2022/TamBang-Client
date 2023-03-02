@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
-import ky from 'ky';
 import { Virtual } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -22,6 +21,7 @@ import 'swiper/css';
 import 'swiper/css/virtual';
 import Layout from '@/components/Layout';
 import { useInjectDaumPostcode } from '@/hooks/useInjectDaumPostcode';
+import { api } from '@/libs/api';
 import { cls } from '@/libs/utils';
 
 interface RoomUploadForm {
@@ -71,7 +71,7 @@ const RoomUploadPage = () => {
     Error,
     FormData
   >({
-    mutationFn: (data) => ky.post(`/api/real-estate`, { body: data }).json(),
+    mutationFn: (data) => api.post(`real-estate`, { body: data }).json(),
   });
   const dataTransferRef = useRef(new DataTransfer());
   const navigate = useNavigate();

@@ -5,13 +5,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
-import ky from 'ky';
-
 import type { Response } from 'response';
 
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
 import Layout from '@/components/Layout';
+import { api } from '@/libs/api';
 
 interface LoginForm {
   email: string;
@@ -25,7 +24,7 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<LoginForm>();
   const { mutate, isLoading } = useMutation<Response, Error, LoginForm>({
-    mutationFn: (data) => ky.post(`/api/login`, { json: data }).json(),
+    mutationFn: (data) => api.post(`login`, { json: data }).json(),
   });
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const navigate = useNavigate();

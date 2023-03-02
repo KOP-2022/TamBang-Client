@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
-import ky from 'ky';
-
 import type { Response } from 'response';
 
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
 import Layout from '@/components/Layout';
+import { api } from '@/libs/api';
 
 interface RegisterRequest {
   email: string;
@@ -33,7 +32,7 @@ const RegisterPage = () => {
     getValues,
   } = useForm<RegisterForm>();
   const { mutate, isLoading } = useMutation<Response, Error, RegisterRequest>({
-    mutationFn: (data) => ky.post(`/api/members`, { json: data }).json(),
+    mutationFn: (data) => api.post(`members`, { json: data }).json(),
   });
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const navigate = useNavigate();

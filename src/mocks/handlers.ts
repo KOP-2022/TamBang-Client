@@ -21,7 +21,7 @@ export const handlers = [
       })
     );
   }),
-  rest.get('/api/real-estates', async (req, res, ctx) => {
+  rest.get('/api/map', async (req, res, ctx) => {
     const { searchParams } = req.url;
     const lng = searchParams.get('longitude');
     const lat = searchParams.get('latitude');
