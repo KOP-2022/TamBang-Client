@@ -8,6 +8,12 @@ import {
   faChevronLeft,
   faHouse,
   faXmark,
+  faMap,
+  faHouseCircleCheck,
+  faBuilding,
+  faSquare,
+  faArrowRightToBracket,
+  faArrowRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default [
@@ -20,4 +26,10 @@ export default [
   faChevronLeft,
   faHouse,
   faXmark,
+  faMap,
+  faHouseCircleCheck,
+  faBuilding,
+  faSquare,
+  faArrowRightToBracket,
+  faArrowRightFromBracket,
 ];
