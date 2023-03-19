@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
@@ -124,7 +125,7 @@ const RegisterPage = () => {
           <Button className="mt-8" disabled={isLoading}>
             {isLoading ? (
               <FontAwesomeIcon
-                icon={['fas', 'spinner']}
+                icon={faSpinner}
                 size="xl"
                 className="animate-spin"
               />

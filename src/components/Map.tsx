@@ -9,6 +9,9 @@ import {
 import { LatLng } from 'kakao-maps';
 import { Facility, Response, Room, RoomDetail } from 'response';
 
+import { faBuilding } from '@fortawesome/free-solid-svg-icons/faBuilding';
+import { faSquare } from '@fortawesome/free-solid-svg-icons/faSquare';
+import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useQuery } from '@tanstack/react-query';
 
@@ -142,7 +145,7 @@ const Map = ({ filters }: MapProps) => {
                       setInfoOpen((prev) => ({ ...prev, [index]: false }))
                     }
                   >
-                    <FontAwesomeIcon icon="xmark" size="xl" />
+                    <FontAwesomeIcon icon={faXmark} size="xl" />
                   </button>
                 </div>
               </CustomOverlayMap>
@@ -189,7 +192,7 @@ const Map = ({ filters }: MapProps) => {
             <hr className="border-grey2" />
             <span className="font-bold text-sm space-x-1">
               <FontAwesomeIcon
-                icon="square"
+                icon={faSquare}
                 size="lg"
                 className="text-currentColor w-6"
               />
@@ -199,7 +202,7 @@ const Map = ({ filters }: MapProps) => {
             </span>
             <div className="text-sm space-x-1">
               <FontAwesomeIcon
-                icon="building"
+                icon={faBuilding}
                 size="lg"
                 className="text-currentColor w-6"
               />

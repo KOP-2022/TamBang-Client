@@ -7,6 +7,9 @@ import {
 } from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
 
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark';
+import { faImages } from '@fortawesome/free-solid-svg-icons/faImages';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
@@ -296,7 +299,7 @@ const RoomUploadPage = () => {
                 'select-none border border-grey2 text-black hover:border-primary transition-all rounded-lg shadow-md h-10 aspect-square cursor-pointer flex gap-2 items-center justify-center'
               )}
             >
-              <FontAwesomeIcon icon={['fas', 'images']} size="xl" />
+              <FontAwesomeIcon icon={faImages} size="xl" />
               {images.length}/15
             </label>
             <Swiper
@@ -321,10 +324,7 @@ const RoomUploadPage = () => {
                       className="bg-white text-black absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full"
                       onClick={onPictureDelete(index)}
                     >
-                      <FontAwesomeIcon
-                        icon={['fas', 'circle-xmark']}
-                        size="xl"
-                      />
+                      <FontAwesomeIcon icon={faCircleXmark} size="xl" />
                     </button>
                   </div>
                 </SwiperSlide>
@@ -334,7 +334,7 @@ const RoomUploadPage = () => {
           <Button className="mt-8" disabled={isLoading}>
             {isLoading ? (
               <FontAwesomeIcon
-                icon={['fas', 'spinner']}
+                icon={faSpinner}
                 size="xl"
                 className="animate-spin"
               />
