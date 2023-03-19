@@ -8,9 +8,9 @@ import { tokenAtom } from './atoms/token';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
+import MapPage from './pages/MapPage';
 import RegisterPage from './pages/RegisterPage';
 
-const MapPage = lazy(() => import('./pages/MapPage'));
 const RoomUploadPage = lazy(() => import('./pages/RoomUploadPage'));
 
 const AuthRoute = () => {

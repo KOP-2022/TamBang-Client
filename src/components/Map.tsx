@@ -15,8 +15,12 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useQuery } from '@tanstack/react-query';
 
-import { Virtual } from 'swiper';
+import { Pagination, Navigation, Virtual } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/virtual';
 
 import BottomSheet from './BottomSheet';
 
@@ -156,20 +160,17 @@ const Map = ({ filters }: MapProps) => {
       {roomDetail && (
         <BottomSheet>
           <Swiper
-            modules={[Virtual]}
+            modules={[Pagination, Virtual, Navigation]}
             slidesPerView={1}
+            pagination={{ clickable: true, dynamicBullets: true }}
             virtual
-            className="w-full"
+            navigation
           >
-            <SwiperSlide virtualIndex={1}>
-              <img src="/home-banner.jpg" alt="image" />
-            </SwiperSlide>
-            <SwiperSlide virtualIndex={2}>
-              <img src="/home-banner.jpg" alt="image" />
-            </SwiperSlide>
-            <SwiperSlide virtualIndex={3}>
-              <img src="/home-banner.jpg" alt="image" />
-            </SwiperSlide>
+            {[1, 1, 1].map((_, index) => (
+              <SwiperSlide key={index} virtualIndex={index}>
+                <img src="/home-banner.jpg" alt="image" />
+              </SwiperSlide>
+            ))}
           </Swiper>
           <div className="flex flex-col p-4 gap-6">
             <div className="flex flex-col">
