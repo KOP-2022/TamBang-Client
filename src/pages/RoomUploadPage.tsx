@@ -1,41 +1,31 @@
-import { useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import {
+  Map as KakaoMap,
+  MapMarker,
+  useInjectKakaoMapApi,
+} from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
-import ky from 'ky';
+import { useAtomValue } from 'jotai';
 import { Virtual } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+import type { RoomUploadForm } from 'form';
 import type { Response } from 'response';
 
+import { tokenAtom } from '@/atoms/token';
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
 import 'swiper/css';
 import 'swiper/css/virtual';
 import Layout from '@/components/Layout';
+import { useInjectDaumPostcode } from '@/hooks/useInjectDaumPostcode';
+import { api } from '@/libs/api';
 import { cls } from '@/libs/utils';
-
-interface RoomUploadForm {
-  sigungu: string;
-  roadname: string;
-  buildtype: '빌라' | '아파트' | '오피스텔';
-  floor: string;
-  area: number;
-  dealtype: '매매' | '전세' | '월세';
-  price: number;
-  deposit: number;
-  monthlypay: number;
-  description: string;
-  image: FileList;
-  // 위도 경도 추가
-}
-
-interface RoomUploadResponse {
-  real_estate_id: number;
-}
 
 const BUILD_TYPE: readonly RoomUploadForm['buildtype'][] = [
   '빌라',
@@ -49,28 +39,39 @@ const DEAL_TYPE: readonly RoomUploadForm['dealtype'][] = [
 ] as const;
 
 const RoomUploadPage = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    resetField,
-    formState: { errors },
-  } = useForm<RoomUploadForm>({
-    defaultValues: { deposit: 0, monthlypay: 0, price: 0, area: 0 },
-  });
-  const { mutate, isLoading, data } = useMutation<
-    Response<RoomUploadResponse>,
-    Error,
-    FormData
-  >({
-    mutationFn: (data) => ky.post(`/api/real-estate`, { body: data }).json(),
+  const { register, handleSubmit, watch, setValue, resetField } =
+    useForm<RoomUploadForm>({
+      defaultValues: { deposit: 0, monthlypay: 0, price: 0, area: 0 },
+    });
+  const token = useAtomValue(tokenAtom);
+  const { mutate, isLoading } = useMutation<Response, Error, FormData>({
+    mutationFn: (data) =>
+      api
+        .post(`real-estate`, {
+          body: data,
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .json(),
+    onSuccess: (response) => {
+      if (response.success) navigate('/');
+    },
   });
   const dataTransferRef = useRef(new DataTransfer());
   const navigate = useNavigate();
+  const { loading } = useInjectKakaoMapApi({
+    appkey: import.meta.env.VITE_KAKAO_MAP_KEY,
+    libraries: ['services'],
+  });
+  const { isLoading: postcodeLoading } = useInjectDaumPostcode();
+  const [showPostcode, setShowPostcode] = useState(false);
+  const postcodeRef = useRef<HTMLDivElement>(null);
 
   const images = watch('image') ?? [];
   const dealType = watch('dealtype');
+  const lng = watch('longitude');
+  const lat = watch('latitude');
+  const sigungu = watch('sigungu');
+  const roadname = watch('roadname');
 
   const onSubmit = ({ image, ...data }: RoomUploadForm) => {
     const formData = new FormData();
@@ -100,16 +101,32 @@ const RoomUploadPage = () => {
       dataTransferRef.current.items.remove(index);
       setValue('image', dataTransferRef.current.files);
     };
+  const convertAddressToLatLng = async (address: string) => {
+    if (loading) return;
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.addressSearch(address, (result, status) => {
+      if (status !== kakao.maps.services.Status.OK) return;
+      setValue('longitude', result[0].x);
+      setValue('latitude', result[0].y);
+    });
+  };
+  const onAddressClick: React.MouseEventHandler<HTMLInputElement> = () => {
+    if (!postcodeRef.current || postcodeLoading) return;
 
-  useEffect(() => {
-    if (data && data.success) {
-      navigate('/');
-    }
-  }, [data, navigate]);
-
-  useEffect(() => {
-    console.log('errors', errors);
-  }, [errors]);
+    setShowPostcode(true);
+    new daum.Postcode({
+      oncomplete: async ({ sido, sigungu, roadAddress }) => {
+        const sigu = `${sido} ${sigungu}`;
+        setValue('sigungu', sigu);
+        const [roadname] = roadAddress.split(`${sigu} `).filter(Boolean);
+        setValue('roadname', roadname);
+        setShowPostcode(false);
+        convertAddressToLatLng(roadAddress);
+      },
+      width: '100%',
+      height: '100%',
+    }).embed(postcodeRef.current);
+  };
 
   return (
     <Layout title="매물 등록">
@@ -118,22 +135,36 @@ const RoomUploadPage = () => {
           className="flex flex-col gap-3 w-full max-w-xs"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <FormInput
-            label="시군구"
-            type="text"
-            placeholder="시군구를 입력해 주세요."
-            register={register('sigungu', {
-              required: '시군구를 입력해 주세요.',
-            })}
-          />
-          <FormInput
-            label="도로명"
-            type="text"
-            placeholder="도로명을 입력해 주세요."
-            register={register('roadname', {
-              required: '도로명을 입력해 주세요.',
-            })}
-          />
+          <div>
+            <label>주소</label>
+            <div
+              ref={postcodeRef}
+              className={showPostcode ? 'h-64 form-input overflow-hidden' : ''}
+            ></div>
+            {!showPostcode && (
+              <FormInput
+                label=""
+                type="button"
+                onClick={onAddressClick}
+                value={
+                  sigungu && roadname
+                    ? `${sigungu} ${roadname}`
+                    : '클릭하여 주소를 입력해 주세요.'
+                }
+                className={cls('text-left', !roadname ? 'text-grey' : '')}
+              />
+            )}
+          </div>
+          {!loading && !showPostcode && lng && lat && (
+            <KakaoMap
+              center={{ lat: +lat, lng: +lng }}
+              level={3}
+              className="h-60 form-input"
+              draggable={false}
+            >
+              <MapMarker position={{ lat: +lat, lng: +lng }}></MapMarker>
+            </KakaoMap>
+          )}
           <div>
             <label>건물 유형</label>
             <div className="flex">
