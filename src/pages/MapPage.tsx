@@ -1,19 +1,13 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import type { FilterForm, SearchForm } from 'form';
+
 import CheckBox from '@/components/CheckBox';
 import Layout from '@/components/Layout';
 import Map from '@/components/Map';
 import SearchBar from '@/components/SearchBar';
 
 const FILTERS = ['편의점', '세탁소', '병원', '마트'] as const;
-
-interface SearchForm {
-  address: string;
-}
-
-interface FilterForm {
-  filters: string[];
-}
 
 const MapPage = () => {
   const { register, handleSubmit } = useForm<SearchForm>();
