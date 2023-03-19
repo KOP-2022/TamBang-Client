@@ -1,11 +1,13 @@
+import { lazy, Suspense } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import type { FilterForm, SearchForm } from 'form';
 
 import CheckBox from '@/components/CheckBox';
 import Layout from '@/components/Layout';
-import Map from '@/components/Map';
 import SearchBar from '@/components/SearchBar';
+
+const Map = lazy(() => import('@/components/Map'));
 
 const FILTERS = ['편의점', '세탁소', '병원', '마트'] as const;
 
@@ -31,7 +33,9 @@ const MapPage = () => {
           ))}
         </div>
       </div>
-      <Map filters={watch('filters') ?? []} />
+      <Suspense fallback={<div>loading...</div>}>
+        <Map filters={watch('filters') ?? []} />
+      </Suspense>
     </Layout>
   );
 };
