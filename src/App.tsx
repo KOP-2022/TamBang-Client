@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import Cookies from 'universal-cookie';
 
 import { tokenAtom } from './atoms/token';
+import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import MapPage from './pages/MapPage';
 import RegisterPage from './pages/RegisterPage';
-import RoomUploadPage from './pages/RoomUploadPage';
+
+const RoomUploadPage = lazy(() => import('./pages/RoomUploadPage'));
 
 const AuthRoute = () => {
   const token = useAtomValue(tokenAtom);
@@ -34,17 +36,25 @@ const App = () => {
   }, [setToken]);
 
   return !loading ? (
-    <Routes>
-      <Route path="/" element={<MainPage />}></Route>
-      <Route path="/map" element={<MapPage />}></Route>
-      <Route element={<PrivateRoute />}>
-        <Route path="/room/upload" element={<RoomUploadPage />}></Route>
-      </Route>
-      <Route element={<AuthRoute />}>
-        <Route path="/login" element={<LoginPage />}></Route>
-        <Route path="/register" element={<RegisterPage />}></Route>
-      </Route>
-    </Routes>
+    <Suspense
+      fallback={
+        <Layout>
+          <div>loading...</div>
+        </Layout>
+      }
+    >
+      <Routes>
+        <Route path="/" element={<MainPage />}></Route>
+        <Route path="/map" element={<MapPage />}></Route>
+        <Route element={<PrivateRoute />}>
+          <Route path="/room/upload" element={<RoomUploadPage />}></Route>
+        </Route>
+        <Route element={<AuthRoute />}>
+          <Route path="/login" element={<LoginPage />}></Route>
+          <Route path="/register" element={<RegisterPage />}></Route>
+        </Route>
+      </Routes>
+    </Suspense>
   ) : null;
 };
 

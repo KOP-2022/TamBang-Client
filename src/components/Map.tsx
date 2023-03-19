@@ -9,11 +9,18 @@ import {
 import { LatLng } from 'kakao-maps';
 import { Facility, Response, Room, RoomDetail } from 'response';
 
+import { faBuilding } from '@fortawesome/free-solid-svg-icons/faBuilding';
+import { faSquare } from '@fortawesome/free-solid-svg-icons/faSquare';
+import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useQuery } from '@tanstack/react-query';
 
-import { Virtual } from 'swiper';
+import { Pagination, Navigation, Virtual } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/virtual';
 
 import BottomSheet from './BottomSheet';
 
@@ -142,7 +149,7 @@ const Map = ({ filters }: MapProps) => {
                       setInfoOpen((prev) => ({ ...prev, [index]: false }))
                     }
                   >
-                    <FontAwesomeIcon icon="xmark" size="xl" />
+                    <FontAwesomeIcon icon={faXmark} size="xl" />
                   </button>
                 </div>
               </CustomOverlayMap>
@@ -153,20 +160,17 @@ const Map = ({ filters }: MapProps) => {
       {roomDetail && (
         <BottomSheet>
           <Swiper
-            modules={[Virtual]}
+            modules={[Pagination, Virtual, Navigation]}
             slidesPerView={1}
+            pagination={{ clickable: true, dynamicBullets: true }}
             virtual
-            className="w-full"
+            navigation
           >
-            <SwiperSlide virtualIndex={1}>
-              <img src="/home-banner.jpg" alt="image" />
-            </SwiperSlide>
-            <SwiperSlide virtualIndex={2}>
-              <img src="/home-banner.jpg" alt="image" />
-            </SwiperSlide>
-            <SwiperSlide virtualIndex={3}>
-              <img src="/home-banner.jpg" alt="image" />
-            </SwiperSlide>
+            {[1, 1, 1].map((_, index) => (
+              <SwiperSlide key={index} virtualIndex={index}>
+                <img src="/home-banner.jpg" alt="image" />
+              </SwiperSlide>
+            ))}
           </Swiper>
           <div className="flex flex-col p-4 gap-6">
             <div className="flex flex-col">
@@ -189,7 +193,7 @@ const Map = ({ filters }: MapProps) => {
             <hr className="border-grey2" />
             <span className="font-bold text-sm space-x-1">
               <FontAwesomeIcon
-                icon="square"
+                icon={faSquare}
                 size="lg"
                 className="text-currentColor w-6"
               />
@@ -199,7 +203,7 @@ const Map = ({ filters }: MapProps) => {
             </span>
             <div className="text-sm space-x-1">
               <FontAwesomeIcon
-                icon="building"
+                icon={faBuilding}
                 size="lg"
                 className="text-currentColor w-6"
               />
