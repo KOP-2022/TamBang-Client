@@ -1,14 +1,8 @@
 declare module 'response' {
-  import type { LatLng } from 'kakao-maps';
-
   export type Response<T = Record<string, never>> = {
     success: boolean;
     message?: string;
     data: T;
-  };
-  export type Room = {
-    id: number;
-    coords: LatLng;
   };
   export type Facility = {
     id: number;
@@ -21,5 +15,27 @@ declare module 'response' {
     placeName: string;
     placeUrl: string;
     roadAddressName: string;
+  };
+  export type Room = {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
+  export type RoomDetail = {
+    address: {
+      sigungu: string;
+      roadName: string;
+    };
+    buildInfo: {
+      buildType: '빌라' | '아파트' | '오피스텔';
+      floor: number;
+      area: number;
+      dealType: '매매' | '전세' | '월세';
+      price: number | null;
+      deposit: number;
+      monthlyPay: number | null;
+    };
+    description: string;
+    memberEmail: string;
   };
 }
