@@ -5,17 +5,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
+import { useSetAtom } from 'jotai';
+import Cookies from 'universal-cookie';
+
+import type { LoginForm } from 'form';
+import type { HTTPError } from 'ky';
 import type { Response } from 'response';
 
+import { tokenAtom } from '@/atoms/token';
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
 import Layout from '@/components/Layout';
 import { api } from '@/libs/api';
-
-interface LoginForm {
-  email: string;
-  password: string;
-}
 
 const LoginPage = () => {
   const {
@@ -23,19 +24,23 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginForm>();
-  const { mutate, isLoading } = useMutation<Response, Error, LoginForm>({
+  const { mutate, isLoading } = useMutation<Response, HTTPError, LoginForm>({
     mutationFn: (data) => api.post(`login`, { json: data }).json(),
+    onSuccess: (response) => {
+      if (response.success) {
+        const cookies = new Cookies();
+        const jwt = cookies.get('jwt');
+        setToken(jwt);
+        navigate('/');
+      } else setErrorMessage(response.message);
+    },
   });
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const navigate = useNavigate();
+  const setToken = useSetAtom(tokenAtom);
 
   const onSubmit: SubmitHandler<LoginForm> = (data) => {
-    mutate(data, {
-      onSuccess: (response) => {
-        if (response.success) navigate('/', { replace: true });
-        else setErrorMessage(response.message);
-      },
-    });
+    mutate(data);
   };
 
   return (
