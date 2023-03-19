@@ -1,18 +1,17 @@
+import { RoomUploadForm } from 'form';
+
 import { rest } from 'msw';
 
-import { facilities } from './constansts';
+import { facilities, rooms } from './constansts';
 
-import type { Facility, Response, Room } from 'response';
+import type { Facility, Response, Room, RoomDetail } from 'response';
 
 interface RealEstate {
   real_estate_id: number;
 }
-interface Login {
-  id: number;
-}
 
 export const handlers = [
-  rest.post('/api/real-estate', async (req, res, ctx) => {
+  rest.post<RoomUploadForm>('/api/real-estate', async (req, res, ctx) => {
     console.log(req.body);
     return res(
       ctx.json<Response<RealEstate>>({
@@ -30,17 +29,19 @@ export const handlers = [
         ctx.status(400),
         ctx.json<Response>({ success: false, data: {} })
       );
-    const data = Array(3)
-      .fill(undefined)
-      .map((_, index) => ({
-        id: index + 1,
-        coords: {
-          lat: +lat + 0.0006 * index,
-          lng: +lng + 0.0006 * index,
-        },
-      }));
 
-    return res(ctx.json<Response<Room[]>>({ success: true, data }));
+    return res(
+      ctx.json<Response<Room[]>>({
+        success: true,
+        data: [
+          {
+            id: 1,
+            latitude: +lat,
+            longitude: +lng,
+          },
+        ],
+      })
+    );
   }),
   rest.get('/api/real-estates/:id/facilities', async (req, res, ctx) => {
     return res(
@@ -48,11 +49,21 @@ export const handlers = [
     );
   }),
   rest.post('/api/login', async (req, res, ctx) => {
-    console.log(req.body);
-    return res(ctx.json<Response<Login>>({ success: true, data: { id: 1 } }));
+    const data = await req.json();
+    console.log(data);
+    return res(ctx.json<Response>({ success: true, data: {} }));
   }),
   rest.post('/api/member', async (req, res, ctx) => {
     console.log(req.body);
     return res(ctx.json<Response>({ success: true, data: {} }));
+  }),
+  rest.get('/api/real-estates/:id', async (req, res, ctx) => {
+    console.log(rooms[0]);
+    return res(
+      ctx.json<Response<RoomDetail>>({
+        success: true,
+        data: rooms[0],
+      })
+    );
   }),
 ];

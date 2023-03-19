@@ -1,4 +1,24 @@
-import { Facility } from 'response';
+import { Facility, RoomDetail } from 'response';
+
+export const rooms: RoomDetail[] = [
+  {
+    address: {
+      sigungu: '서울 노원구',
+      roadName: '광운로 20',
+    },
+    buildInfo: {
+      buildType: '빌라',
+      floor: 1,
+      area: 7,
+      dealType: '월세',
+      price: null,
+      deposit: 500,
+      monthlyPay: 40,
+    },
+    description: '방입니다.',
+    memberEmail: 'test@test.com',
+  },
+];
 
 export const facilities: Facility[] = [
   {
