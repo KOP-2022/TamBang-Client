@@ -5,24 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
+import type { RegisterForm, RegisterRequest } from 'form';
 import type { Response } from 'response';
 
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
 import Layout from '@/components/Layout';
 import { api } from '@/libs/api';
-
-interface RegisterRequest {
-  email: string;
-  password: string;
-  name: string;
-  nickname: string;
-  phone: string;
-}
-
-interface RegisterForm extends RegisterRequest {
-  passwordConfirm: string;
-}
 
 const RegisterPage = () => {
   const {
@@ -33,6 +22,10 @@ const RegisterPage = () => {
   } = useForm<RegisterForm>();
   const { mutate, isLoading } = useMutation<Response, Error, RegisterRequest>({
     mutationFn: (data) => api.post(`members`, { json: data }).json(),
+    onSuccess: (response) => {
+      if (response.success) navigate('/login', { replace: true });
+      else setErrorMessage(response.message);
+    },
   });
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const navigate = useNavigate();
@@ -40,12 +33,7 @@ const RegisterPage = () => {
   const onSubmit: SubmitHandler<RegisterForm> = (data) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordConfirm: _, ...request } = data;
-    mutate(request, {
-      onSuccess: (response) => {
-        if (response.success) navigate('/login', { replace: true });
-        else setErrorMessage(response.message);
-      },
-    });
+    mutate(request);
   };
 
   return (
