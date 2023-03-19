@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Map as KakaoMap,
@@ -10,11 +10,14 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation } from '@tanstack/react-query';
 
+import { useAtomValue } from 'jotai';
 import { Virtual } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+import type { RoomUploadForm } from 'form';
 import type { Response } from 'response';
 
+import { tokenAtom } from '@/atoms/token';
 import Button from '@/components/Button';
 import FormInput from '@/components/FormInput';
 import 'swiper/css';
@@ -23,26 +26,6 @@ import Layout from '@/components/Layout';
 import { useInjectDaumPostcode } from '@/hooks/useInjectDaumPostcode';
 import { api } from '@/libs/api';
 import { cls } from '@/libs/utils';
-
-interface RoomUploadForm {
-  sigungu: string;
-  roadname: string;
-  buildtype: '빌라' | '아파트' | '오피스텔';
-  floor: string;
-  area: number;
-  dealtype: '매매' | '전세' | '월세';
-  price: number;
-  deposit: number;
-  monthlypay: number;
-  description: string;
-  image: FileList;
-  longitude: string;
-  latitude: string;
-}
-
-interface RoomUploadResponse {
-  real_estate_id: number;
-}
 
 const BUILD_TYPE: readonly RoomUploadForm['buildtype'][] = [
   '빌라',
@@ -56,22 +39,22 @@ const DEAL_TYPE: readonly RoomUploadForm['dealtype'][] = [
 ] as const;
 
 const RoomUploadPage = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    resetField,
-    formState: { errors },
-  } = useForm<RoomUploadForm>({
-    defaultValues: { deposit: 0, monthlypay: 0, price: 0, area: 0 },
-  });
-  const { mutate, isLoading, data } = useMutation<
-    Response<RoomUploadResponse>,
-    Error,
-    FormData
-  >({
-    mutationFn: (data) => api.post(`real-estate`, { body: data }).json(),
+  const { register, handleSubmit, watch, setValue, resetField } =
+    useForm<RoomUploadForm>({
+      defaultValues: { deposit: 0, monthlypay: 0, price: 0, area: 0 },
+    });
+  const token = useAtomValue(tokenAtom);
+  const { mutate, isLoading } = useMutation<Response, Error, FormData>({
+    mutationFn: (data) =>
+      api
+        .post(`real-estate`, {
+          body: data,
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .json(),
+    onSuccess: (response) => {
+      if (response.success) navigate('/');
+    },
   });
   const dataTransferRef = useRef(new DataTransfer());
   const navigate = useNavigate();
@@ -139,22 +122,11 @@ const RoomUploadPage = () => {
         setValue('roadname', roadname);
         setShowPostcode(false);
         convertAddressToLatLng(roadAddress);
-        console.log(roadname);
       },
       width: '100%',
       height: '100%',
     }).embed(postcodeRef.current);
   };
-
-  useEffect(() => {
-    if (data && data.success) {
-      navigate('/');
-    }
-  }, [data, navigate]);
-
-  useEffect(() => {
-    console.log('errors', errors);
-  }, [errors]);
 
   return (
     <Layout title="매물 등록">
