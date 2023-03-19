@@ -1,5 +1,6 @@
 import { UseFormRegisterReturn } from 'react-hook-form';
 
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface CheckBoxProps {
@@ -19,7 +20,7 @@ const CheckBox = ({ children, register }: CheckBoxProps) => {
       />
       <label htmlFor={children}>
         <FontAwesomeIcon
-          icon={['fas', 'check']}
+          icon={faCheck}
           size="sm"
           className="text-currentColor"
         />

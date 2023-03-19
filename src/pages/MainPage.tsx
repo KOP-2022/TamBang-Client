@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
+import { faHouseCircleCheck } from '@fortawesome/free-solid-svg-icons/faHouseCircleCheck';
+import { faMap } from '@fortawesome/free-solid-svg-icons/faMap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Layout from '@/components/Layout';
@@ -15,11 +17,7 @@ const MainPage = () => {
           onClick={() => navigate('/map')}
         >
           <div className="flex flex-col gap-4">
-            <FontAwesomeIcon
-              icon={['fas', 'map']}
-              size="3x"
-              className="text-primary"
-            />
+            <FontAwesomeIcon icon={faMap} size="3x" className="text-primary" />
             <span className="font-bold">지도</span>
           </div>
         </button>
@@ -29,7 +27,7 @@ const MainPage = () => {
         >
           <div className="flex flex-col gap-4">
             <FontAwesomeIcon
-              icon={['fas', 'house-circle-check']}
+              icon={faHouseCircleCheck}
               size="3x"
               className="text-primary"
             />

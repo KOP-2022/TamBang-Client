@@ -1,5 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 
+import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons/faArrowRightFromBracket';
+import { faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons/faArrowRightToBracket';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
+import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAtom } from 'jotai';
@@ -40,7 +44,7 @@ const Header = ({ back, title }: HeaderProps) => {
             onClick={back ? onBackClick : onHomeClick}
           >
             {back ? (
-              <FontAwesomeIcon icon={['fas', 'chevron-left']} size="xl" />
+              <FontAwesomeIcon icon={faChevronLeft} size="xl" />
             ) : (
               <span className="select-none font-bold text-primary text-2xl">
                 TamBang
@@ -55,15 +59,15 @@ const Header = ({ back, title }: HeaderProps) => {
         <div className="absolute top-0 bottom-0 right-3">
           {back ? (
             <button className="h-14 w-12" onClick={onHomeClick}>
-              <FontAwesomeIcon icon={['fas', 'house']} size="xl" />
+              <FontAwesomeIcon icon={faHouse} size="xl" />
             </button>
           ) : token ? (
             <button className="h-14 w-12" onClick={onLogoutClick}>
-              <FontAwesomeIcon icon="arrow-right-from-bracket" size="xl" />
+              <FontAwesomeIcon icon={faArrowRightFromBracket} size="xl" />
             </button>
           ) : (
             <button className="h-14 w-12" onClick={onLoginClick}>
-              <FontAwesomeIcon icon="arrow-right-to-bracket" size="xl" />
+              <FontAwesomeIcon icon={faArrowRightToBracket} size="xl" />
             </button>
           )}
         </div>

@@ -1,7 +1,9 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
-import type { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  FontAwesomeIcon,
+  type FontAwesomeIconProps,
+} from '@fortawesome/react-fontawesome';
 
 import { cls } from '@/libs/utils';
 
@@ -10,7 +12,7 @@ export interface InputProps
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
-  icon?: IconProp;
+  icon?: FontAwesomeIconProps['icon'];
   register?: UseFormRegisterReturn;
 }
 
