@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://tanbang-server.kro.kr:8080/:path*"
+    },
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}
